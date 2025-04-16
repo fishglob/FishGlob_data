@@ -79,6 +79,10 @@ Our full citation policy is described in the [Fishglob_data disclaimer](https://
 ### Survey specific guidance
 For survey specific guidance, please see [meta data for bottom trawl surveys](https://github.com/AquaAuma/FishGlob_data/tree/main/metadata_docs).
 
+### Updates policy
+
+The FISHGLOB Steering Committee updates this database approximately once a year, to incorporate additional data from included surveys, and to continually improve the data pipeline. Every year (large) update will represent a new “Release” (as listed on [our releases page](https://github.com/AquaAuma/FishGlob_data/releases) - currently #4.) If critical errors are discovered the Steering Committee will update the database as quickly as is logistically feasible. Anyone re-using the FISHGLOB database who wants to request specific changes in future updates is welcome to open a GitHub Issue. 
+
 ### :warning: Important updates :warning:
 
 > **1/29/2025**: We are aware that there are some surveys that currently have 0 values for wgt and num based columns where they should have NAs, as described in [issue 47](https://github.com/AquaAuma/FishGlob_data/issues/47). We recommend that you look closely at the metadata for surveys you're using to see whether a 0 value in a column means 0, or means NA. We are currently working to resolve this issue.
