@@ -51,8 +51,11 @@
 
 # Test for misspelled species
 # taxa <- c("Gadus morhua","plop", "Thunus alalonga","Octopus vulgaris")
+taxon_list <- c(126436,765, 127026,140605)
 # # Call function
-# clean_taxa(taxon_list = taxa, input_survey = "Test", save = F, output = "")
+clean_taxa(taxon_list = taxa, input_survey = "Test", save = F, output = "")
+
+
 
 # OUTPUT
 # Time difference of -3.160841 secs
@@ -62,18 +65,6 @@
 # ------------#
 # Function
 # ------------#
-
-# Example of use
-
-# Needed variables
-taxon_list <- c("Gadus morhua","plop", "Thunnus alalunga","Octopus vulgaris")
-input_survey <- "test"
-save <- F
-output <- "NA"
-fishbase <- TRUE
-
-# Call function
-clean_taxa(taxon_list)
 
 
 ##### 
