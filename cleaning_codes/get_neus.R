@@ -9,10 +9,6 @@
 ####Zoe Kitchel
 #### May 4, 2024
 ####Following issue 47, need to update sum technique to remove duplicates
-####Update
-####Juliano Palacios
-#### September 11, 2025
-####Following issue 54, fixing negative values of `num_cpue` and `wgt_cpue`
 ################################################################################
 
 
@@ -563,8 +559,6 @@ unique_name_match
 #--------------------------------------------------------------------------------------#
 
 # Get WoRM's id for sourcing
-# `gnr_datasources()` was deprecated in taxize v0.9.102.
-# ℹ Please use `gna_data_sources()` instead.
 wrm <- gna_data_sources() %>% 
   filter(title == "World Register of Marine Species") %>% 
   pull(id)
@@ -632,7 +626,7 @@ unique_name_match <- count_clean_neus %>%
 unique_name_match
 #check if empty
 
-
+clean_neus
 
 # -------------------------------------------------------------------------------------#
 #### SAVE DATABASE IN GOOGLE DRIVE ####
@@ -774,5 +768,5 @@ for(i in 1:length(survey_units)){
 
 
 # Just run this routine should be good for all
-write_clean_data(data = survey_std, survey = "NEUS_std",
-                 overwrite = T, rdata=TRUE)
+# write_clean_data(data = survey_std, survey = "NEUS_std",
+                 # overwrite = T, rdata=TRUE)
