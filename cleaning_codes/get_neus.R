@@ -559,7 +559,7 @@ unique_name_match
 #--------------------------------------------------------------------------------------#
 
 # Get WoRM's id for sourcing
-wrm <- gnr_datasources() %>% 
+wrm <- gna_data_sources() %>% 
   filter(title == "World Register of Marine Species") %>% 
   pull(id)
 
@@ -626,7 +626,7 @@ unique_name_match <- count_clean_neus %>%
 unique_name_match
 #check if empty
 
-
+clean_neus
 
 # -------------------------------------------------------------------------------------#
 #### SAVE DATABASE IN GOOGLE DRIVE ####
@@ -768,5 +768,5 @@ for(i in 1:length(survey_units)){
 
 
 # Just run this routine should be good for all
-write_clean_data(data = survey_std, survey = "NEUS_std",
-                 overwrite = T, rdata=TRUE)
+# write_clean_data(data = survey_std, survey = "NEUS_std",
+                 # overwrite = T, rdata=TRUE)

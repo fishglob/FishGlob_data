@@ -1,0 +1,2 @@
+load("/Users/jepa88/GitHub/my_FishGlob_data/outputs/Cleaned_data/AI_clean.RData")
+head(AI_clean.RData)

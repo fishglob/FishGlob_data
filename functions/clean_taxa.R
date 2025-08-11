@@ -5,6 +5,9 @@
 # Last Updated: August 2023
 # Update task: worms package is outdated, updating functions to use
 # worrms package instead.
+# Last Updated: September 2025
+# Update task: taxize package was updated, function needs to be 
+# updated accordingly
 # ------------------------------------------ #
 
 # ------------#
@@ -48,8 +51,11 @@
 
 # Test for misspelled species
 # taxa <- c("Gadus morhua","plop", "Thunus alalonga","Octopus vulgaris")
+# taxa <- c(126436,765, 127026,140605)
 # # Call function
 # clean_taxa(taxon_list = taxa, input_survey = "Test", save = F, output = "")
+
+
 
 # OUTPUT
 # Time difference of -3.160841 secs
@@ -60,9 +66,8 @@
 # Function
 # ------------#
 
-# clean_taxa(taxon_list)
 
-# taxon_list <- "Hemitripterus americanus"
+##### 
 
 clean_taxa <- function(taxon_list, input_survey = "NA", save = F, output = NA, fishbase=TRUE){
   
@@ -81,7 +86,7 @@ clean_taxa <- function(taxon_list, input_survey = "NA", save = F, output = NA, f
   s_time <- Sys.time()
   
   # Get WoRM's id for sourcing
-  wrm <- taxize::gnr_datasources() %>% 
+  wrm <- taxize::gna_data_sources() %>% 
     dplyr::filter(title == "World Register of Marine Species") %>% 
     dplyr::pull(id)
   
@@ -160,17 +165,16 @@ clean_taxa <- function(taxon_list, input_survey = "NA", save = F, output = NA, f
     # NOTE: it takes longer because it goes trough a
     # series of checkpoints a taxon validation
     
-    
-    # If scientific names are provided, check misspelling
-    fix_taxon <- taxize::gnr_resolve(taxon_list,
+    fix_taxon <- taxize::gna_verifier(taxon_list,
                                      data_source_ids = wrm,
                                      best_match_only = TRUE,
                                      canonical = TRUE,
                                      ask = FALSE) %>%
       # dplyr::filter(score > 0.98) %>%
       dplyr::select(
-        query = user_supplied_name,
-        taxa = matched_name2)
+        query = submittedName,
+        taxa = matchedCanonicalSimple
+        )
     
     # # Missing in fix_taxon
     missing_misspelling <- tibble::tibble(

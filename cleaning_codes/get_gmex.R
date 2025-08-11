@@ -423,7 +423,7 @@ gmex <- gmex %>%
 #--------------------------------------------------------------------------------------#
 
 # Get WoRM's id for sourcing
-wrm <- gnr_datasources() %>% 
+wrm <- gna_data_sources() %>% 
   filter(title == "World Register of Marine Species") %>% 
   pull(id)
 
