@@ -5,6 +5,9 @@
 # Last Updated: August 2023
 # Update task: worms package is outdated, updating functions to use
 # worrms package instead.
+# Last Updated: September 2025
+# Update task: taxize package was updated, function needs to be 
+# updated accordingly
 # ------------------------------------------ #
 
 # ------------#
@@ -60,9 +63,20 @@
 # Function
 # ------------#
 
-# clean_taxa(taxon_list)
+# Example of use
 
-# taxon_list <- "Hemitripterus americanus"
+# Needed variables
+taxon_list <- c("Gadus morhua","plop", "Thunnus alalunga","Octopus vulgaris")
+input_survey <- "test"
+save <- F
+output <- "NA"
+fishbase <- TRUE
+
+# Call function
+clean_taxa(taxon_list)
+
+
+##### Function to clean taxa names and get fishbase ids
 
 clean_taxa <- function(taxon_list, input_survey = "NA", save = F, output = NA, fishbase=TRUE){
   
