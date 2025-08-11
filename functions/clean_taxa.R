@@ -51,9 +51,9 @@
 
 # Test for misspelled species
 # taxa <- c("Gadus morhua","plop", "Thunus alalonga","Octopus vulgaris")
-taxon_list <- c(126436,765, 127026,140605)
+# taxa <- c(126436,765, 127026,140605)
 # # Call function
-clean_taxa(taxon_list = taxa, input_survey = "Test", save = F, output = "")
+# clean_taxa(taxon_list = taxa, input_survey = "Test", save = F, output = "")
 
 
 
