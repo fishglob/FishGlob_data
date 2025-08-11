@@ -10,7 +10,12 @@
 #### May 4, 2024
 ####Following issue 47, need to update sum technique to remove duplicates
 ################################################################################
-
+####Update
+####Zoe Kitchel
+#### August 11, 2025
+####Following issue #58
+####Delete few hauls with unexpected haul durations, and calculate effort metrics
+################################################################################
 
 #NB: Note that there was a gear and vessel swap in 2008-2009 (Albatross to Bigelow)
 #this code uses conversions from NEFSC to correct data post 2009 to pre 2009
@@ -30,16 +35,15 @@
 #reduced to 3.0 knots. The direction of the tows changed to follow the depth contour.
 
 #NB: haul_dur is raw, does not account for conversions in abundance and biomass,
-#and therefore effort based metrics (per km^2 or per hour) should not be calculated without careful consideration, therefore,
-#wgt_cpue, wgt_h, num_cpue, and num_h are not calculated
+#and therefore, we deleted rows with unusual tow durations to calculate effort based metrics (per km^2 or per hour) 
+#wgt_cpue, wgt_h, num_cpue, and num_h 
 
 #Please note:
-#We intentionally do not calculate effort-based columns (cpua or cpue) for the NEUS dataset. These values should all be NA. 
+#As of August 2025, we calculate effort-based columns (cpua or cpue) for the NEUS dataset.
 # The wgt and num values have been adjusted in order to account for the gear and methods change using conversion factors.
-#Additionally, the trawl footprint (area_swept) has been standardized at 0.0384 km^2. However, haul duration (haul_dur) has not been adjusted in the cleaned dataset. Therefore, we did not calculate wgt_cpua or wgt_cpue values,
-#as we want to make sure that care is taken to ensure a haul is a standard duration haul before calculating the effort based metrics. To calculate effort based metrics, we recommend:
-#1) removing hauls with haul_dur outside of a specified range (i.e., +/- 5 min of intended haul duration which was 0.5 hr before 2009 and 0.3 hr after 2009), and 
-#2) calculating effort metrics by dividing by 0.0384 km^2 or by 0.5 hr (all species observations calibrated to standard pre 2009 half hour tow).
+#Additionally, the trawl footprint (area_swept) has been standardized at 0.0384 km^2. However, haul duration (haul_dur) has not been adjusted in the cleaned dataset. Therefore, to calculate effort based metrics, we:
+#1) removed hauls with haul_dur outside of +/- 5 min of intended haul duration which was 0.5 hr before 2009 and 0.3 hr after 2009, and then
+#2) calculated effort metrics by dividing by 0.0384 km^2 or by 0.5 hr (all species observations calibrated to standard pre 2009 half hour tow).
 
 
 #Helpful documents discussing gear and  vessel transition for Northeast US
@@ -286,6 +290,23 @@ neus_fall <- neus_fall %>%
   mutate(stratumarea = as.double(stratumarea)* 3.429904) 
 neus_fall$survey <- "NEUS"
 
+#Remove all hauls that are not within 5 min of expected haul duration (August 11 2025 update)
+#0.083 = 5 minutes in units of hours
+#This removes 168 hauls (0.8%)
+haul_id_out_of_timebounds_pre2009 <- neus_fall %>%
+  filter((year < 2009 & haul_dur < 0.5-0.083) | (year < 2009 & haul_dur > 0.5+0.083 )) %>%
+  distinct(haul_id)
+
+haul_id_out_of_timebounds_2009onward <- neus_fall %>%
+  filter((year >= 2009 & haul_dur < 0.333-0.083) | (year >= 2009 & haul_dur > 0.333+0.083 )) %>%
+  distinct(haul_id)
+
+neus_fall_remove_haul_id_wrong_tow_duration_length <- c(haul_id_out_of_timebounds_pre2009$haul_id,haul_id_out_of_timebounds_2009onward$haul_id)
+
+neus_fall <- neus_fall %>% 
+  filter(!(haul_id %in% neus_fall_remove_haul_id_wrong_tow_duration_length))
+
+#Add in additional columns
 neus_fall<- neus_fall %>%
   mutate(
     source = "NOAA",
@@ -295,18 +316,18 @@ neus_fall<- neus_fall %>%
     sub_area = NA,
     stat_rec = NA,
     area_swept = 0.0384, #Average tow area in km^2 for albatross
-    #num_h could be calculated by dividing num by haul duration,
+    #num_h is calculated by dividing num by haul duration (always 0.5 hours because post 2008 surveys calibrated back to earlier surveys),
     #but use caution because of 2008-2009 conversion
-    num_h = NA,
-    #num_cpue could be calculated by dividing num by area swept,
+    num_h = num/0.5,
+    #num_cpue is calculated by dividing num by area swept,
     #but use caution because of 2008-2009 conversion
-    num_cpue = NA,
-    #wgt_h could be calculated by dividing wgt by haul duration,
+    num_cpue = wgt/area_swept,
+    #wgt_h is calculated by dividing wgt by haul duration,
     #but use caution because of 2008-2009 conversion
-    wgt_h = NA,
-    #wgt_cpue could be calculated by dividing wgt by area swept,
+    wgt_h = wgt/0.5,
+    #wgt_cpue is calculated by dividing wgt by area swept,
     #but use caution because of 2008-2009 conversion
-    wgt_cpue = NA
+    wgt_cpue = wgt/area_swept
      ) %>%
   select(survey, haul_id, source, timestamp, country, sub_area, continent, stat_rec, station,
          stratum, year, month, day, quarter, season, latitude, longitude,
@@ -449,6 +470,23 @@ neus_spring <- neus_spring %>%
   mutate(stratumarea = as.double(stratumarea)* 3.429904) 
 neus_spring$survey <- "NEUS"
 
+#Remove all hauls that are not within 5 min of expected haul duration (August 11 2025 update)
+#0.083 = 5 minutes in units of hours
+#This removes 143 hauls (0.8%)
+haul_id_out_of_timebounds_pre2009 <- neus_spring %>%
+  filter((year < 2009 & haul_dur < 0.5-0.083) | (year < 2009 & haul_dur > 0.5+0.083 )) %>%
+  distinct(haul_id)
+
+haul_id_out_of_timebounds_2009onward <- neus_spring %>%
+  filter((year >= 2009 & haul_dur < 0.333-0.083) | (year >= 2009 & haul_dur > 0.333+0.083 )) %>%
+  distinct(haul_id)
+
+neus_spring_remove_haul_id_wrong_tow_duration_length <- c(haul_id_out_of_timebounds_pre2009$haul_id,haul_id_out_of_timebounds_2009onward$haul_id)
+
+neus_spring <- neus_spring %>% 
+  filter(!(haul_id %in% neus_spring_remove_haul_id_wrong_tow_duration_length))
+
+#Calculating additional columns
 neus_spring<- neus_spring %>%
   mutate(
     source = "NOAA",
@@ -458,18 +496,18 @@ neus_spring<- neus_spring %>%
     sub_area = NA,
     stat_rec = NA,
     area_swept = 0.0384, #Average tow area in km^2 for albatross
-    #num_h could be calculated by dividing num by haul duration,
+    #num_h is calculated by dividing num by haul duration (always 0.5 hours because post 2008 surveys calibrated back to earlier surveys),
     #but use caution because of 2008-2009 conversion
-    num_h = NA,
-    #num_cpue could be calculated by dividing num by area swept,
+    num_h = num/0.5,
+    #num_cpue is calculated by dividing num by area swept,
     #but use caution because of 2008-2009 conversion
-    num_cpue = NA,
-    #wgt_h could be calculated by dividing wgt by haul duration,
+    num_cpue = wgt/area_swept,
+    #wgt_h is calculated by dividing wgt by haul duration,
     #but use caution because of 2008-2009 conversion
-    wgt_h = NA,
-    #wgt_cpue could be calculated by dividing wgt by area swept,
+    wgt_h = wgt/0.5,
+    #wgt_cpue is calculated by dividing wgt by area swept,
     #but use caution because of 2008-2009 conversion
-    wgt_cpue = NA
+    wgt_cpue = wgt/area_swept
   ) %>%
   select(survey, haul_id,source, timestamp, country, sub_area, continent, stat_rec, station,
          stratum, year, month, day, quarter, season, latitude, longitude,
@@ -559,7 +597,7 @@ unique_name_match
 #--------------------------------------------------------------------------------------#
 
 # Get WoRM's id for sourcing
-wrm <- gnr_datasources() %>% 
+wrm <- gna_data_sources() %>% 
   filter(title == "World Register of Marine Species") %>% 
   pull(id)
 
