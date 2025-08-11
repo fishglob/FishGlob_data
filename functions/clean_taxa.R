@@ -76,7 +76,7 @@ fishbase <- TRUE
 clean_taxa(taxon_list)
 
 
-##### Function to clean taxa names and get fishbase ids
+##### 
 
 clean_taxa <- function(taxon_list, input_survey = "NA", save = F, output = NA, fishbase=TRUE){
   
@@ -95,7 +95,7 @@ clean_taxa <- function(taxon_list, input_survey = "NA", save = F, output = NA, f
   s_time <- Sys.time()
   
   # Get WoRM's id for sourcing
-  wrm <- taxize::gnr_datasources() %>% 
+  wrm <- taxize::gna_data_sources() %>% 
     dplyr::filter(title == "World Register of Marine Species") %>% 
     dplyr::pull(id)
   
