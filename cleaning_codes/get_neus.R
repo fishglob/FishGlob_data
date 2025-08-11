@@ -9,6 +9,10 @@
 ####Zoe Kitchel
 #### May 4, 2024
 ####Following issue 47, need to update sum technique to remove duplicates
+####Update
+####Juliano Palacios
+#### September 11, 2025
+####Following issue 54, fixing negative values of `num_cpue` and `wgt_cpue`
 ################################################################################
 
 
@@ -559,7 +563,9 @@ unique_name_match
 #--------------------------------------------------------------------------------------#
 
 # Get WoRM's id for sourcing
-wrm <- gnr_datasources() %>% 
+# `gnr_datasources()` was deprecated in taxize v0.9.102.
+# ℹ Please use `gna_data_sources()` instead.
+wrm <- gna_data_sources() %>% 
   filter(title == "World Register of Marine Species") %>% 
   pull(id)
 
