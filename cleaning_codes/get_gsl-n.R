@@ -12,6 +12,12 @@
 ####  Juliano Palacios
 ####  Spetember 5, 2023
 #### Update in response to Issue #21
+
+####Update
+####Juliano Palacios
+#### September 11, 2025
+####Following issue 54, fixing negative values of `num_cpue` and `wgt_cpue`
+
 #--------------------------------------------------------------------------------------#
 #### LOAD LIBRARIES AND FUNCTIONS ####
 #--------------------------------------------------------------------------------------#
@@ -105,6 +111,29 @@ GSLnor$verbatim_name <- trimws(as.character(GSLnor$Nom_Scient_Esp), which = "rig
 
 GSLnor <- GSLnor[!is.na(GSLnor$lat),] #only keep rows with latitude
 GSLnor <- GSLnor[!is.na(GSLnor$depth),] #only keep rows with depth
+
+# Double check negative values
+# There are  252 negative Duree values
+sapply(GSLnor[, sapply(GSLnor, is.numeric)], function(x) sum(x < 0))  #252
+
+# These are a miss calculation between 11pm of one day and 00:00 of the next day
+fix_negatives <- GSLnor %>% 
+  filter(Duree <0) %>% 
+  mutate(
+    t1 = hms(Hre_Deb),
+    t2 = hms(Hre_Fin),
+    t2 = if_else(t2 < t1, t2 + hours(24), t2), # handle next day
+    Duree = as.numeric(t2 - t1, units = "mins")
+  ) %>% 
+  select(-t1,-t2)
+
+# Re join the correct times
+
+GSLnor <- GSLnor %>% 
+  filter(Duree > 0) %>% # keep only positive Duree
+  bind_rows(fix_negatives) # add the fixed negative values
+  
+### End of Fix (Update September 11, 2025) ##
 
 
 GSLnor <- GSLnor %>%
