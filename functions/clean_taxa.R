@@ -174,17 +174,16 @@ clean_taxa <- function(taxon_list, input_survey = "NA", save = F, output = NA, f
     # NOTE: it takes longer because it goes trough a
     # series of checkpoints a taxon validation
     
-    
-    # If scientific names are provided, check misspelling
-    fix_taxon <- taxize::gnr_resolve(taxon_list,
+    fix_taxon <- taxize::gna_verifier(taxon_list,
                                      data_source_ids = wrm,
                                      best_match_only = TRUE,
                                      canonical = TRUE,
                                      ask = FALSE) %>%
       # dplyr::filter(score > 0.98) %>%
       dplyr::select(
-        query = user_supplied_name,
-        taxa = matched_name2)
+        query = submittedName,
+        taxa = matchedCanonicalSimple
+        )
     
     # # Missing in fix_taxon
     missing_misspelling <- tibble::tibble(
