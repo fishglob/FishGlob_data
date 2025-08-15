@@ -360,12 +360,27 @@ unique_name_match
 #Sebastes                                  Sebastes     
 #Sebastes sp. (miniatus / crocotulus)      Sebastes     
 #Sebastes sp. (aleutianus / melanostictus) Sebastes 
+
+
+########## A. Fredston, August 2025: resolving issue #49 where haul_id value is a numeric, see https://github.com/AquaAuma/FishGlob_data/issues/49 
+class(clean_wcann$haul_id) 
+head(clean_wcann$haul_id) 
+# this is a numeric
+# could tell R to make it a character, but safer for it to not be a string of numbers anyway
+
+clean_wcann_fixed_haul_id <- clean_wcann |> 
+  mutate(haul_id = paste0("id", haul_id))
+class(clean_wcann_fixed_haul_id$haul_id)
+head(clean_wcann_fixed_haul_id$haul_id)
+###########
+
+
 # -------------------------------------------------------------------------------------#
 #### SAVE DATABASE IN GOOGLE DRIVE ####
 # -------------------------------------------------------------------------------------#
 
 # Just run this routine should be good for all
-write_clean_data(data = clean_wcann, survey = "WCANN", overwrite = T, csv = T)
+write_clean_data(data = clean_wcann_fixed_haul_id, survey = "WCANN", overwrite = T, csv = T)
 
 
 
@@ -496,9 +511,20 @@ for(i in 1:length(survey_units)){
   }
 }
 
+########## A. Fredston, August 2025: resolving issue #49 where haul_id value is a numeric, see https://github.com/AquaAuma/FishGlob_data/issues/49 
+class(survey_std$haul_id) 
+head(survey_std$haul_id) 
+# this is a numeric
+# could tell R to make it a character, but safer for it to not be a string of numbers anyway
+
+survey_std_fixed_haul_id <- survey_std |> 
+  mutate(haul_id = paste0("id", haul_id))
+class(survey_std_fixed_haul_id$haul_id)
+head(survey_std_fixed_haul_id$haul_id)
+###########
 
 # Just run this routine should be good for all
-write_clean_data(data = survey_std, survey = "WCANN_std",
+write_clean_data(data = survey_std_fixed_haul_id, survey = "WCANN_std",
                  overwrite = T, rdata=TRUE)
 
 
