@@ -546,6 +546,20 @@ unique_name_match <- count_clean_gmex %>%
 #depend on goals of data use, and therefore are maintained in FishGlob data product
 
 
+
+########## A. Fredston, August 2025: resolving issue #49 where haul_id value is a numeric, see https://github.com/AquaAuma/FishGlob_data/issues/49 
+class(clean_gmex$haul_id) 
+head(clean_gmex$haul_id) 
+
+clean_gmex_fixed_haul_id <- clean_gmex |> 
+  mutate(haul_id = paste0("id", haul_id))
+class(clean_gmex_fixed_haul_id$haul_id)
+head(clean_gmex_fixed_haul_id$haul_id)
+###########
+
+
+
+
 # -------------------------------------------------------------------------------------#
 #### SAVE DATABASE IN GOOGLE DRIVE ####
 # -------------------------------------------------------------------------------------#
@@ -683,6 +697,18 @@ for(i in 1:length(survey_units)){
 }
 
 
+
+########## A. Fredston, August 2025: resolving issue #49 where haul_id value is a numeric, see https://github.com/AquaAuma/FishGlob_data/issues/49 
+class(survey_std$haul_id) 
+head(survey_std$haul_id) 
+
+survey_std_fixed_haul_id <- survey_std |> 
+  mutate(haul_id = paste0("id", haul_id))
+class(survey_std_fixed_haul_id$haul_id)
+head(survey_std_fixed_haul_id$haul_id)
+###########
+
+
 # Just run this routine should be good for all
-write_clean_data(data = survey_std, survey = "GMEX_std",
+write_clean_data(data = survey_std_fixed_haul_id, survey = "GMEX_std",
                  overwrite = T, rdata=TRUE)

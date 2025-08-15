@@ -666,15 +666,27 @@ unique_name_match
 
 clean_neus
 
+
+
+########## A. Fredston, August 2025: resolving issue #49 where haul_id value is a numeric, see https://github.com/AquaAuma/FishGlob_data/issues/49 
+class(clean_neus$haul_id) 
+head(clean_neus$haul_id) 
+# this is a character, but still gets written out as a numeric, so let's make that impossible
+
+clean_neus_fixed_haul_id <- clean_neus |> 
+  mutate(haul_id = paste0("id", haul_id))
+class(clean_neus_fixed_haul_id$haul_id)
+head(clean_neus_fixed_haul_id$haul_id)
+###########
+
+
 # -------------------------------------------------------------------------------------#
 #### SAVE DATABASE IN GOOGLE DRIVE ####
 # -------------------------------------------------------------------------------------#
 
 # Just run this routine should be good for all
-write_clean_data(data = clean_neus, survey = "NEUS", overwrite = T)
+write_clean_data(data = clean_neus_fixed_haul_id, survey = "NEUS", overwrite = T)
 
-write_clean_data(data = clean_neus, survey = "NEUS", overwrite = T,
-                 csv = T, rdata= F)
 
 
 # -------------------------------------------------------------------------------------#
@@ -805,6 +817,20 @@ for(i in 1:length(survey_units)){
 }
 
 
+
+########## A. Fredston, August 2025: resolving issue #49 where haul_id value is a numeric, see https://github.com/AquaAuma/FishGlob_data/issues/49 
+class(survey_std$haul_id) 
+head(survey_std$haul_id) 
+# this is a character, but still gets written out as a numeric, so let's make that impossible
+
+survey_std_fixed_haul_id <- survey_std |> 
+  mutate(haul_id = paste0("id", haul_id))
+class(survey_std_fixed_haul_id$haul_id)
+head(survey_std_fixed_haul_id$haul_id)
+###########
+
+
 # Just run this routine should be good for all
-# write_clean_data(data = survey_std, survey = "NEUS_std",
-                 # overwrite = T, rdata=TRUE)
+write_clean_data(data = survey_std_fixed_haul_id, survey = "NEUS_std",
+                  overwrite = T, rdata=TRUE)
+
