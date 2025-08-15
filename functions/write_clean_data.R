@@ -2,20 +2,38 @@
 # -------------------------------------------------------------- #
 # NOTE (JEPA): TYPE MUST ALLWAYS BE CHARACTERS ""
 # -------------------------------------------------------------- #
+################################################################################
+####Update
+#### Juliano Palacios
+#### August, 2025
+####Following issue 66, included a chunk of code that installs/loads a package 
+# that is missing. It now requires an embeded function `check_pkg.R`
+################################################################################
+
 
 write_clean_data <- function(data, survey, overwrite = NA, remove =  T, type = "NA",
                              csv = FALSE, ggdrive = FALSE, rdata = TRUE,
                              compiled = FALSE, gzip = FALSE){
-  
+
+  # Makes sure all packages are installed
+  source("functions/check_pkg.R")
+  check_pkg(
+    c("readxl","here","tidyverse","readr","data.table","googledrive")
+  )
+
   if(rdata == TRUE & compiled == FALSE){
     readme <- as.data.frame(read_excel(here("standard_formats/fishglob_data_columns_std.xlsx")))
-    data <- data %>% 
+    data <- data %>%
       mutate(year = as.integer(year),
              #month = as.integer(month),
              #day = as.integer(day)
              )
     save(data, readme, file = paste0("outputs/Cleaned_data/",survey,"_clean.RData"))
   }
+  
+  
+  # if (requireNamespace("readxl", quietly = TRUE) && requireNamespace("here", quietly = TRUE))
+    # readme <- as.data.frame(readxl::read_excel(here::here("standard_formats/fishglob_data_columns_std.xlsx")))
   
   if(rdata == TRUE & compiled == TRUE){
     readme <- as.data.frame(read_excel(here("standard_formats/fishglob_data_columns_std.xlsx")))
@@ -85,3 +103,5 @@ write_clean_data <- function(data, survey, overwrite = NA, remove =  T, type = "
 
 # write_clean_data(data,survey,overwrite = NA, remove = F, type = "NA")
 # ------------------------ #
+
+write_clean_data(data = "", survey = "")
