@@ -3,7 +3,7 @@
 #'Juliano Palacios
 #'August, 2025
 #' Following issue 66, included a chunk of code that installs/loads a package 
-#' that is missing. It now requires an embeded function check_pkg.R
+#' that is missing. It now requires an embedded function check_pkg.R
 #'
 #'
 #' trim haul dataset per survey_unit based on a discrete global grid of given resolution and 2 trimming options :
