@@ -1,4 +1,11 @@
-
+#' code adapted from https://github.com/zoekitchel/trawl_spatial_turnover/blob/master/data_prep_code/species/explore_NorthSea_trimming.Rmd
+#'Update
+#'Juliano Palacios
+#'August, 2025
+#' Following issue 66, included a chunk of code that installs/loads a package 
+#' that is missing. It now requires an embeded function check_pkg.R
+#'
+#'
 #' adapted from BioTIME code sent by Jon Chase's lab
 #' filter database to choose subsets of datasets with number of locations (ie hauls) in each year >=4 and duration >=10 years,
 #' and matching locations across years to keep locations in similar configuration across years
@@ -16,6 +23,14 @@
 #'
 
 apply_trimming_per_survey_unit_method2 <- function(data){
+  
+  # Makes sure all packages are installed
+  source("functions/check_pkg.R")
+  check_pkg(
+    c("raster","tidyverse","purrr","readr","vegan","reshape2", "readr", "here")
+  )
+  # Done checking  #
+  
   
   bt_loc <- data %>%
     dplyr::select(survey_unit, year, latitude, longitude) %>%
