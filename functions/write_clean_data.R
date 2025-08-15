@@ -32,9 +32,6 @@ write_clean_data <- function(data, survey, overwrite = NA, remove =  T, type = "
   }
   
   
-  # if (requireNamespace("readxl", quietly = TRUE) && requireNamespace("here", quietly = TRUE))
-    # readme <- as.data.frame(readxl::read_excel(here::here("standard_formats/fishglob_data_columns_std.xlsx")))
-  
   if(rdata == TRUE & compiled == TRUE){
     readme <- as.data.frame(read_excel(here("standard_formats/fishglob_data_columns_std.xlsx")))
     data <- data %>% 
