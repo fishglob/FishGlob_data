@@ -15,6 +15,13 @@
 #'
 flag_spp <- function(df, region){
   
+  # Makes sure all packages are installed
+  source("functions/check_pkg.R")
+  check_pkg(
+    c("forcats","tidyverse","here")
+  )
+  # Done checking  #
+  
   cat("taxonomy check for region: ", region, sep="\n")
   
   #select region (survey column)
