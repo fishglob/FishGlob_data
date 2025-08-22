@@ -38,5 +38,6 @@ check_pkg <- function(pkg_list){
   suppressMessages(
   sapply(pkg_list, require, character.only = TRUE)
   )
+  message(paste0("Required packages loaded"))
 }
 
