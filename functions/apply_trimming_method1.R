@@ -1,10 +1,11 @@
 #' code adapted from https://github.com/zoekitchel/trawl_spatial_turnover/blob/master/data_prep_code/species/explore_NorthSea_trimming.Rmd
+### ----------------------- ###
 #'Update
 #'Juliano Palacios
 #'August, 2025
 #' Following issue 66, included a chunk of code that installs/loads a package 
 #' that is missing. It now requires an embedded function check_pkg.R
-#'
+#'### ----------------------- ###
 #'
 #' trim haul dataset per survey_unit based on a discrete global grid of given resolution and 2 trimming options :
 #' 1- trim hauls with any number of cells x years missing
@@ -24,15 +25,16 @@
 #' @return
 #' @export
 #'
+#'
+#'# Makes sure all packages are installed
+source("functions/check_pkg.R")
+check_pkg(
+  c("dplyr","rnaturalearth","tidyverse","dggridR","readr","ggnewscale","gridExtra")
+)
 
 apply_trimming_per_survey_unit_method1 <- function(data, hex_res){
   
-  # Makes sure all packages are installed
-  source("functions/check_pkg.R")
-  check_pkg(
-    c("dplyr","rnaturalearth","tidyverse","dggridR","readr","ggnewscale","gridExtra")
-  )
-  # Done checking  #
+  
   
   # load coastlines for maps ----
   

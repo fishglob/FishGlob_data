@@ -12,18 +12,23 @@
 #'August, 2025
 #' Following issue 66, included a chunk of code that installs/loads a package 
 #' that is missing. It now requires an embedded function check_pkg.R
+#### -------------------------  ####
+
 
 #### -------------------------  ####
-# STEP 1: Function tha creates data
+# STEP 1: Makes sure all packages are installed
+#### -------------------------  ####
+
+source("functions/check_pkg.R")
+check_pkg(
+  c("tibble")
+)
+
+#### -------------------------  ####
+# STEP 2: Function tha creates data
 #### -------------------------  ####
 
 call.taxon.names <- function(x){
-  
-  # Makes sure all packages are installed
-  source("functions/check_pkg.R")
-  check_pkg(
-    c("tibble")
-  )
   
   taxon_correction <- tibble(
     Species = as.factor(c('Dipturus batis',

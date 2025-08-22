@@ -21,16 +21,15 @@
 #' @return
 #' @export
 #'
+#'# Makes sure all packages are installed
+source("functions/check_pkg.R")
+check_pkg(
+  c("raster","tidyverse","purrr","readr","vegan","reshape2", "readr", "here")
+)
+# Done checking  #
 
+#' Actual function
 apply_trimming_per_survey_unit_method2 <- function(data){
-  
-  # Makes sure all packages are installed
-  source("functions/check_pkg.R")
-  check_pkg(
-    c("raster","tidyverse","purrr","readr","vegan","reshape2", "readr", "here")
-  )
-  # Done checking  #
-  
   
   bt_loc <- data %>%
     dplyr::select(survey_unit, year, latitude, longitude) %>%
