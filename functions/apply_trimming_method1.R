@@ -32,7 +32,6 @@ apply_trimming_per_survey_unit_method1 <- function(data, hex_res){
   check_pkg(
     c("dplyr","rnaturalearth","tidyverse","dggridR","readr","ggnewscale","gridExtra")
   )
-  rm(check_pkg)
   # Done checking  #
   
   # load coastlines for maps ----
