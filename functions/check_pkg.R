@@ -31,8 +31,8 @@ check_pkg <- function(pkg_list){
   new.pkg <- pkg_list[!(pkg_list %in% installed.packages()[,"Package"])]
   
   if(length(new.pkg) >0){ 
-    install.packages(new.pkg, dependencies = TRUE, repos = "http://cran.us.r-project.org")
-    message(paste0("I have installed the following package(s): ",new.pkg))
+    message(paste0("One moment, I am installing the following required package(s): ",new.pkg))
+    install.packages("ggnewscale", dependencies = TRUE)
   }
   
   suppressMessages(
