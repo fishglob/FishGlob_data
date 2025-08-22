@@ -16,10 +16,10 @@ write_clean_data <- function(data, survey, overwrite = NA, remove =  T, type = "
                              compiled = FALSE, gzip = FALSE){
 
   # Makes sure all packages are installed
-  # source("functions/check_pkg.R")
-  # check_pkg(
-  #   c("readxl","here","tidyverse","readr","data.table","googledrive")
-  # )
+  source("functions/check_pkg.R")
+  check_pkg(
+    c("readxl","here","tidyverse","readr","data.table","googledrive")
+  )
 
   if(rdata == TRUE & compiled == FALSE){
     readme <- as.data.frame(read_excel(here("standard_formats/fishglob_data_columns_std.xlsx")))

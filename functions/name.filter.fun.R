@@ -5,6 +5,12 @@
 # This script filters out specific data
 # according to a list of species, the
 # specific survey and the BycSpecRecCode
+#'Update
+#'Juliano Palacios
+#'August, 2025
+#' Following issue 66, included a chunk of code that installs/loads a package 
+#' that is missing. It now requires an embedded function check_pkg.R
+
 
 #### -------------------------  ####
 
@@ -44,6 +50,12 @@ spp_BycSpecRecCode_5 <- c('Ammodytidae','Anarhichas lupus','Argentina silus','Ar
 #### -------------------------  ####
 
 filter_out_fun <-  function(data){
+  
+  # Makes sure all packages are installed
+  source("functions/check_pkg.R")
+  check_pkg(
+    c("dplyr")
+  )
   
   
   out_data <- data %>% 
