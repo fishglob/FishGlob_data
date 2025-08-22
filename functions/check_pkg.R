@@ -28,16 +28,25 @@
 #' @export
 
 check_pkg <- function(pkg_list){
+  
   new.pkg <- pkg_list[!(pkg_list %in% installed.packages()[,"Package"])]
   
   if(length(new.pkg) >0){ 
+    
     message(paste0("One moment, I am installing the following required package(s): ",new.pkg))
-    install.packages("ggnewscale", dependencies = TRUE)
+    install.packages(new.pkg, dependencies = TRUE)
   }
   
-  suppressMessages(
-  sapply(pkg_list, require, character.only = TRUE)
+  success <- suppressMessages(
+    sapply(pkg_list, require, character.only = TRUE)
   )
-  message(paste0("Required packages loaded"))
+  
+  # Warn if any still failed
+  if (any(!success)) {
+    warning("These packages could not be loaded: ", 
+            paste(pkg_list[!success], collapse = ", "))
+  } else {
+    message("✅ All required packages loaded")
+  }
 }
 
