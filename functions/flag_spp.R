@@ -7,6 +7,13 @@
 #' -statistics of flagged species (csv file)
 #' -a plot of flagged species vs years indicating presence / absence
 #' code adapted from https://github.com/pinskylab/OceanAdapt/blob/master/R/add-spp-to-taxonomy.Rmd#L33
+#'Update
+#'Juliano Palacios
+#'August, 2025
+#' Following issue 66, included a chunk of code that installs/loads a package 
+#' that is missing. It now requires an embedded function check_pkg.R
+
+
 #' @param df fishglob dataset
 #' @param region name of region as per survey column
 #'
