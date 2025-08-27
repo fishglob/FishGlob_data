@@ -1,8 +1,8 @@
 # ------------------------------------------ #
 # Function: clean taxa
 # Author: Juliano Palacios Abrantes | j.palacios@oceans.ubc
-# Last Updated: June 2021
-# Last Updated: August 2023
+# Updated: June 2021
+# Updated: August 2023
 # Update task: worms package is outdated, updating functions to use
 # worrms package instead.
 # Last Updated: September 2025

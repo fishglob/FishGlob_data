@@ -6,7 +6,14 @@
 # according to a list of species, the
 # specific survey and the BycSpecRecCode
 
-#### -------------------------  ####
+### ----------------------- ###
+#'Update
+#'Juliano Palacios
+#'August, 2025
+#' Following issue 66, included a chunk of code that installs/loads a package 
+#' that is missing. It now requires an embedded function check_pkg.R
+### ----------------------- ###
+
 
 #### -------------------------  ####
 # STEP 1: List of species
@@ -40,11 +47,20 @@ spp_BycSpecRecCode_5 <- c('Ammodytidae','Anarhichas lupus','Argentina silus','Ar
                           'Merlangius merlangus','Trisopterus esmarkii')
 
 #### -------------------------  ####
+# STEP 3: Makes sure all packages are installed
+#### -------------------------  ####
+
+source("functions/check_pkg.R")
+check_pkg(
+  c("dplyr")
+)
+
+#### -------------------------  ####
 # STEP 2: Function to filter all levels
 #### -------------------------  ####
 
+
 filter_out_fun <-  function(data){
-  
   
   out_data <- data %>% 
     filter(!(BycSpecRecCode==0 & Survey=='NS-IBTS' & !Species %in% spp_BycSpecRecCode_0),

@@ -1,10 +1,21 @@
+### ----------------------- ###
+#'Update
+#'Juliano Palacios
+#'August, 2025
+#' Following issue 66, included a chunk of code that installs/loads a package 
+#' that is missing. It now requires an embedded function check_pkg.R
+### ----------------------- ###
+
+
+# Makes sure all packages are installed
+source("functions/check_pkg.R")
+check_pkg(
+  c("data.table","dplyr","RODBC","car","readr","Hmisc")
+)
+#' Done checking  #  
+
+#' Actual function
 get_coeffs <- function(taxon_list, survey, date, save=F){
-  
-  library(data.table)
-  library(dplyr)
-  library(readr)
-  library(rfishbase)
-  library(stringr)
   
   s_time <- Sys.time()
   

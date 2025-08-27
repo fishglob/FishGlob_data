@@ -1,7 +1,26 @@
 #' Read and clean FISHGLOB data
+### ----------------------- ###
+#'Update
+#'Juliano Palacios
+#'August, 2025
+#' Following issue 66, included a chunk of code that installs/loads a package 
+#' that is missing. It now requires an embedded function check_pkg.R
+### ----------------------- ###
+#'
+#'
+#'# Makes sure all packages are installed
+source("functions/check_pkg.R")
+check_pkg(
+  c("here",
+    "readxl",
+    "dplyr",
+    "prob")
+)
+#'
 #'
 #' @return
 #' @export
+#'
 #'
 read_clean_data <- function(surveys, std=FALSE){
   
