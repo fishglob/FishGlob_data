@@ -99,7 +99,10 @@ Please add notes and descriptions about the surveys, with links to documentation
 
 
 ## English Channel - FR-CGFS
-- There was a change in 2015 when they switched to a new vessel, with subsequent changes in catchability, issue is not fixed at this point, see [issue #6](https://github.com/AquaAuma/FishGlob_data/issues/6)
+### Data cleaning process [script](https://github.com/AquaAuma/FishGlob_data/blob/main/cleaning_codes/get_datras.R) 
+- In 2015, the survey switched to a new vessel and a larger version of the initial gear, with subsequent changes in catchability of species. Up to 2014, the RV Gwen Drez was used, deploying the GOV gear with 19.7 m footrope and 25.9 m headline. No information on wing spread or door spread was collected. We therefore assume an average wing spread of 10 m for hauls up to 2014, following the historical description of the survey in the [survey manual](https://doi.org/10.17895/ices.pub.3519) (p. 68). From 2015 onwards, the vessel RV Thalassa is used, deploying a GOV with 36 m footrope and 47 m headline. Door spread is measured since 2015 and wing spread from 2016 onwards. The survey design was slightly adapted in 2015 by reducing the number of stations (74 instead of 88), as the new, larger vessel cannot sample in very shallow waters and stations in the southern North Sea (ICES division 4c) were not deemed relevant anymore for stock assessment purposes.
+- Care should be taken when using the FR-CGFS time series because of the described historical changes above, which may have introduced variations in density estimates for certain species. This bias is particularly problematic when the temporal window of analysis is short, when analyses are conducted at the species rather than the community level, and when absolute rather than relative densities are used.
+### Related issues
 
 
 ## Gulf of Alaska - GOA
