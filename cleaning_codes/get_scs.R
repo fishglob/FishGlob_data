@@ -67,9 +67,9 @@ fishglob_data_columns <- read_excel("standard_formats/fishglob_data_columns.xlsx
 #--------------------------------------------------------------------------------------#
 
 spp_files <- list(
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_FALL_SPP.csv",
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SPRING__SPP.csv",
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SUMMER_SPP.csv")
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_FALL_SPP.csv",
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SPRING__SPP.csv",
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SUMMER_SPP.csv")
 
 #spp_files <- as.list(dir(pattern = "_SPP", path = "data_raw", full.names = T))
 mar_spp <- spp_files %>% #this pulls in species from all three surveys, so there are 
@@ -82,12 +82,12 @@ mar_spp <- mar_spp %>%
   rename(spp = SPEC,
          SPEC = CODE) %>%
   distinct()
-  
+
 
 mission_files <- list(
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_FALL_MISSION.csv",
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SPRING_MISSION.csv",
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SUMMER_MISSION.csv")
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_FALL_MISSION.csv",
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SPRING_MISSION.csv",
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SUMMER_MISSION.csv")
 #mission_files <- as.list(dir(pattern = "_MISSION", path = "data_raw", full.names = T))
 mar_missions <- mission_files %>% 
   map_dfr(~ read_csv(.x, col_types = cols(
@@ -98,9 +98,9 @@ mar_missions <- mission_files %>%
   )))
 
 info_files <- list(
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_FALL_INF.csv",
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SPRING__INF.csv",
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SUMMER_INF.csv")
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_FALL_INF.csv",
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SPRING__INF.csv",
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SUMMER_INF.csv")
 #info_files <- as.list(dir(pattern = "_INF", path = "data_raw", full.names = T))
 mar_info <- info_files %>% 
   map_dfr(~ read_csv(.x, col_types = cols(
@@ -112,9 +112,9 @@ mar_info <- info_files %>%
   )))
 
 catch_files <- list(
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_FALL_CATCH.csv",
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SPRING__CATCH.csv",
-"https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SUMMER_CATCH.csv")
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_FALL_CATCH.csv",
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SPRING__CATCH.csv",
+  "https://raw.githubusercontent.com/pinskylab/OceanAdapt/master/data_raw/MAR_SUMMER_CATCH.csv")
 #catch_files <- as.list(dir(pattern = "_CATCH", path = "data_raw", full.names = T))
 mar_catch <- catch_files %>% 
   map_dfr(~ read_csv(.x, col_types = cols(
@@ -161,7 +161,7 @@ mar <- mar %>%
          verbatim_name = spp,
          year = year,
          depth = depth) %>%
- # area swept by net in km^2 = 33.6 m door spread * 
+  # area swept by net in km^2 = 33.6 m door spread * 
   #DIST in nautical miles * 1852 m/1 nautical mile * 1 km^2/1000000 m^2
   mutate(area_swept = 33.6 * dist * 1852 *(1/1000000),
          month = month(as.Date(sdate)),
@@ -171,6 +171,18 @@ mar <- mar %>%
 #if any values are 9999, switch to NA
 mar <- mar %>%
   filter(wgt != 9999)
+
+################# A. Fredston, Sept 2025
+# fix for issue where positive counts but wgt = 0, or positive weight but num = 0 (see github issue #48, https://github.com/fishglob/FishGlob_data/issues/48)
+mar <- mar |> 
+  mutate(wgt = ifelse(year <= 1997 & num > 0 & wgt == 0, # fix 1: for the early years, when scales were not precise, samplers entered 0 for low weights. here we replace those with 0.01 to indicate that the fish were present, just at very low biomass.  
+                      0.01, 
+                      wgt)) |> 
+  mutate(num = ifelse(wgt > 0 & num == 0, # fix 2: across all years, when there is a weight but no count, just enter NA--it means the sampler didn't count the catch so we have no data (does not mean there were zero individuals). 
+                      NA,
+                      num
+  ))
+#################
 
 # Does the spp column contain any eggs or non-organism notes? 
 #As of 2021, only "UNIDENTIFIED" to be  removed
@@ -204,24 +216,24 @@ mar <- mar %>%
   )
 
 mar <- mar %>% 
-# Adding extra columns and setting proper format
-mutate(
-  country = "Canada",
-  source = "DFO",
-  timestamp = mdy("02/08/2021"),
-  sub_area = NA,
-  continent = "n_america",
-  stat_rec = NA,
-  station = NA,
-  quarter = ifelse(month %in% c(1,2,3),1,
-                   ifelse(month %in% c(4,5,6),2,
-                          ifelse(month %in% c(7,8,9),3,
-                                 4
-                          )
-                   )
-  ),
-  verbatim_aphia_id = NA,
-) %>%
+  # Adding extra columns and setting proper format
+  mutate(
+    country = "Canada",
+    source = "DFO",
+    timestamp = mdy("02/08/2021"),
+    sub_area = NA,
+    continent = "n_america",
+    stat_rec = NA,
+    station = NA,
+    quarter = ifelse(month %in% c(1,2,3),1,
+                     ifelse(month %in% c(4,5,6),2,
+                            ifelse(month %in% c(7,8,9),3,
+                                   4
+                            )
+                     )
+    ),
+    verbatim_aphia_id = NA,
+  ) %>%
   select(survey, haul_id, source, timestamp, country, sub_area, continent, stat_rec, station, stratum,
          year, month, day, quarter, season, latitude, longitude, haul_dur, area_swept,
          gear, depth, sbt, sst, verbatim_name, num, num_h, num_cpue,
@@ -425,46 +437,46 @@ for(i in 1:length(surveys)){
 # integrate spatio-temporal flags
 for(i in 1:length(survey_units)){
   
-    hex_res7_0 <- read.csv(paste0("outputs/Flags/trimming_method1/hex_res7/",
-                                  survey_units[i], "_hex_res_7_trimming_0_hauls_removed.csv"),
-                           sep = ";")
-    hex_res7_0 <- as.vector(hex_res7_0[,1])
+  hex_res7_0 <- read.csv(paste0("outputs/Flags/trimming_method1/hex_res7/",
+                                survey_units[i], "_hex_res_7_trimming_0_hauls_removed.csv"),
+                         sep = ";")
+  hex_res7_0 <- as.vector(hex_res7_0[,1])
+  
+  hex_res7_2 <- read.csv(paste0("outputs/Flags/trimming_method1/hex_res7/",
+                                survey_units[i], "_hex_res_7_trimming_02_hauls_removed.csv"),
+                         sep = ";")
+  hex_res7_2 <- as.vector(hex_res7_2[,1])
+  
+  hex_res8_0 <- read.csv(paste0("outputs/Flags/trimming_method1/hex_res8/",
+                                survey_units[i], "_hex_res_8_trimming_0_hauls_removed.csv"),
+                         sep= ";")
+  hex_res8_0 <- as.vector(hex_res8_0[,1])
+  
+  hex_res8_2 <- read.csv(paste0("outputs/Flags/trimming_method1/hex_res8/",
+                                survey_units[i], "_hex_res_8_trimming_02_hauls_removed.csv"),
+                         sep = ";")
+  hex_res8_2 <- as.vector(hex_res8_2[,1])
+  
+  if(!survey_units[i] %in% c("DFO-SOG","IS-TAU","SCS-FALL","WBLS")){
     
-    hex_res7_2 <- read.csv(paste0("outputs/Flags/trimming_method1/hex_res7/",
-                                  survey_units[i], "_hex_res_7_trimming_02_hauls_removed.csv"),
-                           sep = ";")
-    hex_res7_2 <- as.vector(hex_res7_2[,1])
-    
-    hex_res8_0 <- read.csv(paste0("outputs/Flags/trimming_method1/hex_res8/",
-                                  survey_units[i], "_hex_res_8_trimming_0_hauls_removed.csv"),
-                           sep= ";")
-    hex_res8_0 <- as.vector(hex_res8_0[,1])
-    
-    hex_res8_2 <- read.csv(paste0("outputs/Flags/trimming_method1/hex_res8/",
-                                  survey_units[i], "_hex_res_8_trimming_02_hauls_removed.csv"),
-                           sep = ";")
-    hex_res8_2 <- as.vector(hex_res8_2[,1])
-    
-    if(!survey_units[i] %in% c("DFO-SOG","IS-TAU","SCS-FALL","WBLS")){
-      
     trim_2 <- read.csv(paste0("outputs/Flags/trimming_method2/",
                               survey_units[i],"_hauls_removed.csv"))
     trim_2 <- as.vector(trim_2[,1])
-    } else {trim_2 <- c()}
-    
-    survey_std <- survey_std %>% 
-      mutate(flag_trimming_hex7_0 = ifelse(survey_unit == survey_units[i] & haul_id %in% hex_res7_0,
-                                           "TRUE",flag_trimming_hex7_0),
-             flag_trimming_hex7_2 = ifelse(survey_unit == survey_units[i] & haul_id %in% hex_res7_2,
-                                           "TRUE",flag_trimming_hex7_2),
-             flag_trimming_hex8_0 = ifelse(survey_unit == survey_units[i] & haul_id %in% hex_res8_0,
-                                           "TRUE",flag_trimming_hex8_0),
-             flag_trimming_hex8_2 = ifelse(survey_unit == survey_units[i] & haul_id %in% hex_res8_2,
-                                           "TRUE",flag_trimming_hex8_2),
-             flag_trimming_2 = ifelse(survey_unit == survey_units[i] & haul_id %in% trim_2,
-                                      "TRUE", flag_trimming_2)
-      )
-    rm(hex_res7_0, hex_res7_2, hex_res8_0, hex_res8_2)
+  } else {trim_2 <- c()}
+  
+  survey_std <- survey_std %>% 
+    mutate(flag_trimming_hex7_0 = ifelse(survey_unit == survey_units[i] & haul_id %in% hex_res7_0,
+                                         "TRUE",flag_trimming_hex7_0),
+           flag_trimming_hex7_2 = ifelse(survey_unit == survey_units[i] & haul_id %in% hex_res7_2,
+                                         "TRUE",flag_trimming_hex7_2),
+           flag_trimming_hex8_0 = ifelse(survey_unit == survey_units[i] & haul_id %in% hex_res8_0,
+                                         "TRUE",flag_trimming_hex8_0),
+           flag_trimming_hex8_2 = ifelse(survey_unit == survey_units[i] & haul_id %in% hex_res8_2,
+                                         "TRUE",flag_trimming_hex8_2),
+           flag_trimming_2 = ifelse(survey_unit == survey_units[i] & haul_id %in% trim_2,
+                                    "TRUE", flag_trimming_2)
+    )
+  rm(hex_res7_0, hex_res7_2, hex_res8_0, hex_res8_2)
 }
 
 
