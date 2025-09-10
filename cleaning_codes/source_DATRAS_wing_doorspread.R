@@ -20,7 +20,7 @@ survey <- survey %>%
 gears <- data.frame(survey) %>% 
   dplyr::group_by(Survey, Gear) %>% 
   dplyr::summarise(hauls = length(unique(HaulID)), years = length(unique(Year))) %>% 
-  select(Survey, Gear, hauls, years)
+  dplyr::select(Survey, Gear, hauls, years)
 
 # 2. only select certain gears per survey (GOV and/or most dominant in cases without GOV)
 survey <- survey %>% 
@@ -225,27 +225,35 @@ area2 <- rbind(ie, area2)
 ### FR-CGFS ###
 cgfs <- survey %>%
   filter(Survey=='FR-CGFS') %>%
-  select(-TotalNo, -NoMeas, -CatCatchWgt, -LngtCode, -LngtClass, -HLNoAtLngt, -AphiaID) %>%
+  dplyr::select(-TotalNo, -NoMeas, -CatCatchWgt, -LngtCode, -LngtClass, -HLNoAtLngt, -AphiaID) %>%
   distinct()
 
-# doorspread
-lm0 <- lm(DoorSpread ~ log(Depth) , data=cgfs)
-pred0 <- predict.lm (object=lm0, newdata=cgfs, interval='confidence', level=0.95)
-cgfs$door_fit <- pred0[,1]
+# split dataset into before year 2015 ('2014') and from 2015 onwards ('2015')
+cgfs2014 <- cgfs %>%
+  filter(Year < 2015)
+
+cgfs2015 <- cgfs %>%
+  filter(Year >= 2015)
+
+# # doorspread - can be deleted, but may be needed if NA values for DoorSpread appear in future survey years
+# lm0 <- lm(DoorSpread ~ log(Depth) , data=cgfs2015)
+# pred0 <- predict.lm (object=lm0, newdata=cgfs2015, interval='confidence', level=0.95)
+# cgfs2015$door_fit <- pred0[,1]
 
 # wingspread
-cgfs <- cgfs %>% 
-  mutate(WingSpread = replace(WingSpread, WingSpread %in% c(10), NA)) # remove fixed number in 1994
+cgfs2014 <- cgfs2014 %>%
+  mutate(WingSpread = 10) # assign average of 10 m
 
-lm0 <- lm(WingSpread ~ DoorSpread , data=cgfs) 
-cgfs[is.na(cgfs$DoorSpread),]$DoorSpread <- cgfs[is.na(cgfs$DoorSpread),]$door_fit
-pred0 <- predict.lm (object=lm0, newdata=cgfs, interval='confidence', level=0.95)
-cgfs$wing_fit <- pred0[,1]
-cgfs[is.na(cgfs$WingSpread),]$WingSpread <- cgfs[is.na(cgfs$WingSpread),]$wing_fit
+lm0 <- lm(WingSpread ~ DoorSpread , data=cgfs2015) 
+# cgfs2015[is.na(cgfs2015$DoorSpread),]$DoorSpread <- cgfs2015[is.na(cgfs2015$DoorSpread),]$door_fit #can be deleted, but may be needed if NA values for DoorSpread appear in future survey years
+pred0 <- predict.lm (object=lm0, newdata=cgfs2015, interval='confidence', level=0.95)
+cgfs2015$wing_fit <- pred0[,1]
+cgfs2015[is.na(cgfs2015$WingSpread),]$WingSpread <- cgfs2015[is.na(cgfs2015$WingSpread),]$wing_fit
 
 # combine
-cgfs <- cgfs %>%
-  select(HaulID, DoorSpread, WingSpread) %>%
+cgfs <- cgfs2014 %>%
+  dplyr::select(HaulID, DoorSpread, WingSpread) %>%
+  bind_rows(cgfs2015 %>% dplyr::select(HaulID, DoorSpread, WingSpread)) %>%
   dplyr::rename(DoorSpread2=DoorSpread, WingSpread2=WingSpread)
 area2 <- rbind(cgfs, area2)
 
